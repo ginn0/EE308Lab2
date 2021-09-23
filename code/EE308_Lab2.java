@@ -2,14 +2,14 @@ package EE308_Lab2;
 import java.io.*;
 import java.util.HashSet;
 import org.junit.jupiter.api.Test;
-		public class EE308_Lab2 {
-		//task1
-		static int keywordNum = 0;
-		//task2
-		/*the element of the array is the number of "case", 
-		and the length of the array is the number of "switch",
-		thus we set them into groups*/
-	 	static int switchNum = 0;
+	public class EE308_Lab2 {
+	    //task1
+	    static int keywordNum = 0;
+	    //task2
+	    /*the element of the array is the number of "case", 
+	    and the length of the array is the number of "switch",
+	    thus we set them into groups*/
+	    static int switchNum = 0;
 	    static int [] caseNum = new int[500];
 	    //task3 and task4
 	    static int elseifNum = 0;
