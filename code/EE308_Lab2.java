@@ -49,6 +49,119 @@ import org.junit.jupiter.api.Test;
 	        list.add("volatile");
 	        list.add("while");
 	    }
+	  
+	    //to save lowercase words
+	    public static boolean IsChar(char c){
+	        return c >= 'a' && c <= 'z';
+	    }
+	    @Test
+	    //stack about curly braces and semicolon
+	    public static void Stack(){
+	    	 int [] currentStack = new int [4000];
+	         int pre=0;
+	         for(int i = 1 ; i <= stackLen ; i++){
+	             switch (ifelseStack[i]){
+	                 case 3:
+	                     if(currentStack[pre-1] == 2){
+	                         // if a "else if" before this else, change the topping "if;else if;" to ";"
+	                         pre -= 4;
+	                         if(currentStack[pre] != 0){
+	                             currentStack[++pre] = 0;
+	                         }
+	                         elseifNum++;
+	                     }else if(currentStack[pre-1] == 1){
+	                         // if a "else if" before this else, change the topping "if;" to ";"
+	                         pre -= 2;
+	                         if(currentStack[pre] != 0){
+	                             currentStack[++pre] = 0;
+	                         }
+	                         elseNum++;
+	                     }
+	                 case 2:
+	                     // if heading is not a "else if ;", in stack
+	                     if(currentStack[pre] != 0 || currentStack[pre-1] != 2){
+	                         currentStack[++pre] = 2;
+	                     }
+	                     break;
+	                 case 9:
+	                     // {}  => ;
+	                     if(currentStack[pre] == 6){
+	                         if(currentStack[pre-1] != 0){
+	                             currentStack[pre] = 0;
+	                         }else{
+	                             pre--;
+	                         }
+	                     // {;} => ;
+	                     }else if(currentStack[pre] == 0 && currentStack[pre-1] == 6){
+	                         if(currentStack[pre-2] != 0){
+	                             currentStack[pre-1] = 0;
+	                         }else{
+	                             pre -= 2;
+	                         }
+	                     }
+	                     break;
+	                 case 0:
+	                     // won't stack in if the top is already ";"
+	                     if(currentStack[pre] != 0){
+	                         currentStack[++pre] = 0;
+	                     }
+	                     break;
+	                 case 1:
+	                     currentStack[++pre] = ifelseStack[i];
+	                     break;
+	                 case 6:
+	                     currentStack[++pre] = ifelseStack[i];
+	                     break;
+	             }
+	         }
+	     }
+	    // delete one line comment
+	    public static String DeleteSingleLineComment(String str){
+	        for(int i = 0; i < str.length() ;i++){
+	            if(str.charAt(i) == '/' && str.charAt(i) == '/'){
+	                return str.substring(0,i);
+	            }
+	        }
+	        return str;
+	    }
+	    // mark a annotation flag if "/*" appears, delete it until find "*/"
+	    public static String DeleteMultiLineComment(String str){
+	        StringBuilder sb = new StringBuilder(200);
+	        for(int i = 0; i < str.length() ;i++){
+	            if(!comFlag){
+	                if(str.charAt(i) == '/' && str.charAt(i+1) == '*'){
+	                    comFlag = true;
+	                }else{
+	                    sb.append(str.charAt(i));
+	                }
+	            }else{
+	                if(str.charAt(i) == '*' && str.charAt(i+1) == '/'){
+	                    i++;
+	                    comFlag = false;
+	                }
+	            }
+	        }
+	        return sb.toString();
+	    }
+	    //delete string
+	    public static String DeleteInsideString(String str){
+	        StringBuilder sb = new StringBuilder(200);
+	        for(int i = 0; i < str.length() ;i++){
+	            if(!stringFlag){
+	                if(str.charAt(i) == '"'){
+	                    stringFlag = true;
+	                }else{
+	                    sb.append(str.charAt(i));
+	                }
+	            }else{
+
+	                if(str.charAt(i) == '"'){
+	                    stringFlag = false;
+	                }
+	            }
+	        }
+	        return sb.toString();
+	    }
 	    // traverse every line
 	    public static void Traverse(String line, HashSet <String> keywords){
 	        // delete useless content
@@ -110,124 +223,18 @@ import org.junit.jupiter.api.Test;
 	            }
 	            switch (line.charAt(i)) {
 	                case '{':
-	                    ifelseStack[++stackLen] = 0;
+	                    ifelseStack[++stackLen] = 6;
 	                    break;
 	                case '}':
-	                    ifelseStack[++stackLen] = 1;
+	                    ifelseStack[++stackLen] = 9;
 	                    break;
 	                case ';':
-	                    if (ifelseStack[stackLen] != 2) {
-	                        ifelseStack[++stackLen] = 2;
+	                    if (ifelseStack[stackLen] != 0) {
+	                        ifelseStack[++stackLen] = 0;
 	                    }
 	                    break;
 	            }
 	        }
-	    }
-	    //to save lowercase words
-	    public static boolean IsChar(char c){
-	        return c >= 'a' && c <= 'z';
-	    }
-	    @Test
-	    //stack about curly braces and semicolon
-	    public static void Stack(){
-	        int [] currentStack = new int [4000];
-	        int pre=0;
-	        for(int i = 1 ; i <= stackLen ; i++){
-	            switch (ifelseStack[i]){
-	            	case 0://"{"
-	            		currentStack[++pre] = ifelseStack[i];
-	            		break;
-	            	case 1://"}"
-	                    if(currentStack[pre] == 6){
-	                        if(currentStack[pre-1] != 0){
-	                            currentStack[pre] = 0;
-	                        }else{
-	                            pre--;
-	                        }
-	                    }else if(currentStack[pre] == 0 && currentStack[pre-1] == 6){
-	                        if(currentStack[pre-2] != 0){
-	                            currentStack[pre-1] = 0;
-	                        }else{
-	                            pre -= 2;
-	                        }
-	                    }
-	                    break;
-	            	case 2://";"
-	                    if(currentStack[pre] != 0){
-	                        currentStack[++pre] = 0;
-	                    }
-	                    break;
-	            	case 5://"if"
-	                    currentStack[++pre] = ifelseStack[i];
-	                    break;
-	                case 6://"else"
-	                    if(currentStack[pre-1] == 2){
-	                        pre -= 4;
-	                        if(currentStack[pre] != 0){
-	                            currentStack[++pre] = 0;
-	                        }
-	                        elseifNum++;
-	                    }else if(currentStack[pre-1] == 1){
-	                        pre -= 2;
-	                        if(currentStack[pre] != 0){
-	                            currentStack[++pre] = 0;
-	                        }
-	                        elseNum++;
-	                    }
-	                case 7://"else if"
-	                    if(currentStack[pre] != 0 || currentStack[pre-1] != 2){
-	                        currentStack[++pre] = 2;
-	                    }
-	                    break;
-	            }
-	        }
-	    }
-	    // delete one line comment
-	    public static String DeleteSingleLineComment(String str){
-	        for(int i = 0; i < str.length() ;i++){
-	            if(str.charAt(i) == '/' && str.charAt(i) == '/'){
-	                return str.substring(0,i);
-	            }
-	        }
-	        return str;
-	    }
-	    // mark a annotation flag if "/*" appears, delete it until find "*/"
-	    public static String DeleteMultiLineComment(String str){
-	        StringBuilder sb = new StringBuilder(200);
-	        for(int i = 0; i < str.length() ;i++){
-	            if(!comFlag){
-	                if(str.charAt(i) == '/' && str.charAt(i+1) == '*'){
-	                    comFlag = true;
-	                }else{
-	                    sb.append(str.charAt(i));
-	                }
-	            }else{
-	                if(str.charAt(i) == '*' && str.charAt(i+1) == '/'){
-	                    i++;
-	                    comFlag = false;
-	                }
-	            }
-	        }
-	        return sb.toString();
-	    }
-	    //delete string
-	    public static String DeleteInsideString(String str){
-	        StringBuilder sb = new StringBuilder(200);
-	        for(int i = 0; i < str.length() ;i++){
-	            if(!stringFlag){
-	                if(str.charAt(i) == '"'){
-	                    stringFlag = true;
-	                }else{
-	                    sb.append(str.charAt(i));
-	                }
-	            }else{
-
-	                if(str.charAt(i) == '"'){
-	                    stringFlag = false;
-	                }
-	            }
-	        }
-	        return sb.toString();
 	    }
 	    public static void main(String[] args) throws IOException {
 	        HashSet <String> keywords = new HashSet<String>();
